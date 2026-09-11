@@ -1,32 +1,47 @@
-# React + TypeScript + Vite
+# Frontend - Proyecto
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Aplicación web desarrollada con React, TypeScript y Vite.
 
-Currently, two official plugins are available:
+## Requisitos
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Node.js >= 18
+- npm o yarn
 
-## React Compiler
+## Instalación
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+npm install
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+## Scripts Disponibles
+
+| Comando | Descripción |
+|---------|-------------|
+| `npm run dev` | Inicia el servidor de desarrollo |
+| `npm run build` | Compila TypeScript y genera la producción |
+| `npm run preview` | Vista previa de la build en producción |
+| `npm run lint` | Ejecuta el linter (oxlint) |
+
+## Desarrollo
+
+Para iniciar el servidor de desarrollo:
+
+```bash
+npm run dev
+```
+
+El servidor estará disponible en `http://localhost:5173`.
+
+## Build para Producción
+
+```bash
+npm run build
+```
+
+Los archivos generados se guardarán en la carpeta `dist/`.
+
+Para previsualizar la build:
+
+```bash
+npm run preview
+```
