@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/componente-2/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/componente-2/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/controlador-1/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/controlador-1/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/controlador-2/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/controlador-2/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/dominio-1/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/dominio-1/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/interface-dominio/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/interface-dominio/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/persistencia-mysql/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/persistencia-mysql/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/servicio-1/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/servicio-1/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
+  </component>
+</project>
