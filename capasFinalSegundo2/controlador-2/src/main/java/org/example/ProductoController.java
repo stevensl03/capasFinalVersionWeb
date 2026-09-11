@@ -1,7 +1,7 @@
 package org.example;
 
+import org.example.dto.ProductoDTO;
 import org.example.interfaces.IProductoService;
-import org.example.model.Producto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,25 +19,25 @@ public class ProductoController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Producto>> listarProductos() {
+    public ResponseEntity<List<ProductoDTO>> listarProductos() {
         return ResponseEntity.ok(productoService.listarTodos());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Producto> buscarProducto(@PathVariable Long id) {
+    public ResponseEntity<ProductoDTO> buscarProducto(@PathVariable Long id) {
         return productoService.buscarPorId(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<Producto> crearProducto(@RequestBody Producto producto) {
-        Producto creado = productoService.crear(producto);
+    public ResponseEntity<ProductoDTO> crearProducto(@RequestBody ProductoDTO producto) {
+        ProductoDTO creado = productoService.crear(producto);
         return ResponseEntity.status(HttpStatus.CREATED).body(creado);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Producto> actualizarProducto(@PathVariable Long id, @RequestBody Producto producto) {
+    public ResponseEntity<ProductoDTO> actualizarProducto(@PathVariable Long id, @RequestBody ProductoDTO producto) {
         producto.setId(id);
         return ResponseEntity.ok(productoService.actualizar(producto));
     }

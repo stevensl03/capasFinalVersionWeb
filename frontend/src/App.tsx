@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import ProductosList from './components/ProductosList'
-import MovimientosList from './components/MovimientosList'
+import ProductosList from './presentation/components/ProductosList'
+import MovimientosList from './presentation/components/MovimientosList'
 import './App.css'
 
 type Tab = 'productos' | 'movimientos'

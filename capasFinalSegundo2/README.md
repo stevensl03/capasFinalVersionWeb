@@ -1,6 +1,6 @@
 # capasFinalSegundo2
 
-Proyecto Java 21 multi-módulo Maven con **arquitectura en capas híbrida**: una aplicación web REST que combina lógica de negocio propia (desarrollada internamente en capas) con la integración de un componente externo ya empaquetado (`componente-2`, un `.jar` autocontenido). Expone una API REST pensada para ser consumida por un frontend en React.
+Proyecto Java 21 multi-módulo Maven con **arquitectura hexagonal (puertos y adaptadores)** aplicada de forma consistente a los dos bounded contexts del sistema de inventario (Productos y Movimientos). Expone una API REST pensada para ser consumida por un frontend en React.
 
 - **Guía completa de la API REST (para el frontend): [ENDPOINTS.md](ENDPOINTS.md)**
 
@@ -46,46 +46,24 @@ El punto de entrada es la clase `org.example.Aplicacion`, configurada como `<mai
 
 ## 3. Arquitectura de software
 
-La aplicación combina dos flujos independientes, cada uno con su propio camino desde la presentación hasta los datos:
+Los dos bounded contexts (Productos y Movimientos) siguen el mismo diseño desacoplado tipo **puertos y adaptadores** (hexagonal): el dominio no depende de la infraestructura (MySQL/H2) ni de la presentación, sino de abstracciones (interfaces) que la infraestructura implementa y que se inyectan en el composition root.
 
 ```
 Vista Web (React)
-  ├── FLUJO 1 — Arquitectura en capas propia
-  │     controlador-1 → servicio-1 → interface-dominio → dominio-1 → persistencia-mysql
-  │
-  └── FLUJO 2 — Integración de componente externo (.jar)
-        controlador-2 → componente-2
+  ├── Movimientos: controlador-1 → interface-dominio ⊸ servicio-1 → dominio-1 → (interface-dominio) ⊸ persistencia-mysql | persistencia-h2
+  └── Productos:   controlador-2 → interface-producto ⊸ servicio-producto → dominio-producto → (interface-producto) ⊸ persistencia-mysql | persistencia-h2
 ```
 
-### Flujo 1 — Arquitectura en capas propia (funcionalidad de movimientos)
-
-Funcionalidad desarrollada internamente que sigue un diseño desacoplado tipo **puertos y adaptadores** (hexagonal), donde el dominio no depende de la infraestructura (MySQL) sino de abstracciones (interfaces):
-
-| Capa | Módulo Maven | Rol |
+| Capa | Módulos Maven (Movimientos / Productos) | Rol |
 |---|---|---|
-| Presentación | `controlador-1` | Recibe las peticiones de la Vista Web y delega la lógica de negocio a `servicio-1`. |
-| Aplicación | `servicio-1` | Orquesta las operaciones. No accede a la implementación del dominio directamente, sino a través de una interfaz. |
-| Contratos — Interfaz / Dominio 1 | `interface-dominio` | Expone interfaces (lollipop ⊸ UML) y DTOs que desacoplan el contrato de su implementación concreta. |
-| Dominio | `dominio-1` | Contiene las reglas de negocio y la lógica central (p. ej. `Movimiento.validar()`). |
-| Infraestructura | `persistencia-mysql` | Adaptador MySQL que implementa `IRepositorioMovimiento`; aísla el dominio de los detalles de acceso a datos. |
+| Presentación | `controlador-1` / `controlador-2` | Reciben las peticiones HTTP y delegan a la interfaz de servicio (`IMovimientoService` / `IProductoService`). Solo dependen del módulo de interfaces, nunca de la implementación concreta. |
+| Aplicación | `servicio-1` / `servicio-producto` | Orquestan casos de uso, mapean entidad↔DTO y disparan la validación de dominio (`entidad.validar()`). Dependen de la interfaz de repositorio, nunca de una clase MySQL/H2 concreta. |
+| Contratos (puertos) | `interface-dominio` / `interface-producto` | Interfaces de repositorio y servicio, más los DTOs (`MovimientoDTO`, `ProductoDTO`) que desacoplan el contrato REST de la entidad de dominio. |
+| Dominio | `dominio-1` / `dominio-producto` | Entidades con las reglas de negocio (`Movimiento.validar()`, `Producto.validar()`). Cero dependencias de Spring, JDBC o React. |
+| Errores de dominio | `dominio-comun` | `RepositorioException`: los adaptadores de persistencia traducen aquí cualquier fallo de infraestructura (ej. `SQLException`) antes de que llegue a presentación — el mensaje crudo de la BD nunca se expone al cliente HTTP. |
+| Infraestructura | `persistencia-mysql` / `persistencia-h2` | Adaptadores intercambiables que implementan `IRepositorioMovimiento` e `IRepositorioProducto`. Cuál se activa lo decide una sola propiedad (`app.persistencia.motor=mysql\|h2` en `application.properties`) — el dominio y los servicios no se tocan al cambiar de motor. |
 
-Cascada de dependencias reflejada en los poms: `controlador-1` → `servicio-1` → `interface-dominio` → `dominio-1`. El adaptador `persistencia-mysql` implementa el contrato de repositorio (`interface-dominio`) y se cablea en el composition root (`aplicacion`): el dominio se comunica con la base de datos a través de la interfaz, sin depender de ella.
-
-### Flujo 2 — Integración de componente externo (funcionalidad de productos)
-
-El componente `componente-2` es una librería ya compilada y empaquetada (`jar`) que resuelve la funcionalidad de forma **autocontenida** (modelo, contratos, servicio y persistencia JDBC propia). `controlador-2` la consume como dependencia y actúa como un simple adaptador, sin pasar por las capas de servicio, dominio o persistencia propias.
-
-| Capa | Módulo Maven | Rol |
-|---|---|---|
-| Presentación | `controlador-2` | Recibe las peticiones de la Vista Web (independiente del Flujo 1) y delega a `componente-2`. |
-| Componente externo | `componente-2` | Librería `.jar` autocontenida que ya trae toda la lógica y el acceso a datos resueltos internamente. |
-
-Cascada de dependencias: `controlador-2` → `componente-2`.
-
-### Patrón arquitectónico resultante
-
-- **Arquitectura en capas "hecha en casa"** (Controlador → Servicio → Dominio → Persistencia), con separación de responsabilidades y uso de interfaces para desacoplar capas — idónea para lógica de negocio propia y evolutiva.
-- **Integración / reutilización** (Controlador → Componente `.jar`), donde `controlador-2` actúa como adaptador hacia un módulo externo que ya resuelve una funcionalidad completa, sin reimplementarla.
+El composition root (`aplicacion/src/main/java/org/example/config/`) es el único punto que conoce las clases concretas: `CapaConfig` arma los servicios de aplicación, y `PersistenciaMySqlConfig` / `PersistenciaH2Config` (activadas con `@ConditionalOnProperty` según `app.persistencia.motor`) arman los repositorios concretos y los inyectan por interfaz.
 
 ## 4. Endpoints
 
@@ -112,4 +90,4 @@ Resumen (guía completa con contratos JSON, ejemplos `fetch` y manejo de errores
 | `204` | Sin contenido (DELETE) |
 | `400` | Validación de negocio fallida; el cuerpo trae el motivo en **texto plano** |
 | `404` | El recurso `{id}` no existe (cuerpo vacío) |
-| `500` | Error interno (p. ej. base de datos no disponible o campo obligatorio nulo); el cuerpo trae el motivo en texto plano |
+| `500` | Error interno (p. ej. base de datos no disponible); el cuerpo es un mensaje genérico — el detalle real queda en el log del servidor, nunca se expone crudo al cliente |

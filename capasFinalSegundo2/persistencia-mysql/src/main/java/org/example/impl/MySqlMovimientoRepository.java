@@ -1,5 +1,6 @@
 package org.example.impl;
 
+import org.example.excepcion.RepositorioException;
 import org.example.interfaces.IRepositorioMovimiento;
 import org.example.model.Movimiento;
 
@@ -41,7 +42,7 @@ public class MySqlMovimientoRepository implements IRepositorioMovimiento {
                 movimientos.add(map(rs));
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Error al listar movimientos", e);
+            throw new RepositorioException("Error al listar movimientos", e);
         }
         return movimientos;
     }
@@ -58,7 +59,7 @@ public class MySqlMovimientoRepository implements IRepositorioMovimiento {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Error al buscar movimiento", e);
+            throw new RepositorioException("Error al buscar movimiento", e);
         }
         return Optional.empty();
     }
@@ -80,7 +81,7 @@ public class MySqlMovimientoRepository implements IRepositorioMovimiento {
                     }
                 }
             } catch (SQLException e) {
-                throw new RuntimeException("Error al insertar movimiento", e);
+                throw new RepositorioException("Error al insertar movimiento", e);
             }
         } else {
             String sql = "UPDATE movimiento SET producto_id = ?, tipo = ?, cantidad = ?, fecha = ? WHERE id = ?";
@@ -93,7 +94,7 @@ public class MySqlMovimientoRepository implements IRepositorioMovimiento {
                 ps.setLong(5, movimiento.getId());
                 ps.executeUpdate();
             } catch (SQLException e) {
-                throw new RuntimeException("Error al actualizar movimiento", e);
+                throw new RepositorioException("Error al actualizar movimiento", e);
             }
         }
         return movimiento;
@@ -107,7 +108,7 @@ public class MySqlMovimientoRepository implements IRepositorioMovimiento {
             ps.setLong(1, id);
             ps.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException("Error al eliminar movimiento", e);
+            throw new RepositorioException("Error al eliminar movimiento", e);
         }
     }
 

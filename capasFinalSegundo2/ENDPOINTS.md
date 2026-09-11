@@ -20,7 +20,7 @@ Guía de uso de todos los endpoints de la aplicación para consumirlos desde un 
 
 ## 1. Productos — `/api/productos`
 
-Funcionalidad resuelta por el componente externo (`componente-2`), consumida a través de `controlador-2`.
+Bounded context Productos: `controlador-2` → `interface-producto` → `servicio-producto` → `dominio-producto` → `persistencia-mysql` / `persistencia-h2`.
 
 ### Estructura del recurso
 
@@ -42,7 +42,7 @@ Funcionalidad resuelta por el componente externo (`componente-2`), consumida a t
 | `precio` | number | Sí | Valor decimal. |
 | `stock` | number | Sí | Entero. |
 
-> Nota: `componente-2` no valida los campos obligatorios; los impone la base de datos. Si un campo `NOT NULL` viene nulo, la respuesta será `500`.
+> Nota: `Producto.validar()` (dominio) exige `nombre` no vacío, `precio > 0` y `stock >= 0` antes de tocar la base de datos. Si algún campo es inválido, la respuesta es `400` con el motivo en texto plano.
 
 ### Endpoints
 
@@ -85,7 +85,7 @@ Cuerpo (ejemplo):
 ```
 
 - `201` con el producto creado **incluido su `id`** asignado — usar ese `id` en el frontend (claves de listas, navegación).
-- Errores posibles: `500` si un campo obligatorio (`nombre`, `precio`, `stock`) viene nulo.
+- `400` con el motivo en texto plano si falla `Producto.validar()` (`nombre` vacío, `precio <= 0` o `stock < 0`).
 
 #### `PUT /api/productos/{id}` → `200` ó `400`
 
@@ -110,7 +110,7 @@ Cuerpo (ejemplo):
 
 ## 2. Movimientos — `/api/movimientos`
 
-Funcionalidad de arquitectura por capas propia (Flujo 1): `controlador-1` → `servicio-1` → `interface-dominio` → `dominio-1` → `persistencia-mysql`.
+Bounded context Movimientos: `controlador-1` → `interface-dominio` → `servicio-1` → `dominio-1` → `persistencia-mysql` / `persistencia-h2`.
 
 ### Estructura del recurso
 
@@ -288,7 +288,7 @@ Guía de uso de todos los endpoints de la aplicación para consumirlos desde un 
 
 ## 1. Productos — `/api/productos`
 
-Funcionalidad resuelta por el componente externo (`componente-2`), consumida a través de `controlador-2`.
+Bounded context Productos: `controlador-2` → `interface-producto` → `servicio-producto` → `dominio-producto` → `persistencia-mysql` / `persistencia-h2`.
 
 ### Estructura del recurso
 
@@ -310,7 +310,7 @@ Funcionalidad resuelta por el componente externo (`componente-2`), consumida a t
 | `precio` | number | Sí | Valor decimal. |
 | `stock` | number | Sí | Entero. |
 
-> Nota: `componente-2` no valida los campos obligatorios; los impone la base de datos. Si un campo `NOT NULL` viene nulo, la respuesta será `500`.
+> Nota: `Producto.validar()` (dominio) exige `nombre` no vacío, `precio > 0` y `stock >= 0` antes de tocar la base de datos. Si algún campo es inválido, la respuesta es `400` con el motivo en texto plano.
 
 ### Endpoints
 
@@ -353,7 +353,7 @@ Cuerpo (ejemplo):
 ```
 
 - `201` con el producto creado **incluido su `id`** asignado — usar ese `id` en el frontend (claves de listas, navegación).
-- Errores posibles: `500` si un campo obligatorio (`nombre`, `precio`, `stock`) viene nulo.
+- `400` con el motivo en texto plano si falla `Producto.validar()` (`nombre` vacío, `precio <= 0` o `stock < 0`).
 
 #### `PUT /api/productos/{id}` → `200` ó `400`
 
@@ -378,7 +378,7 @@ Cuerpo (ejemplo):
 
 ## 2. Movimientos — `/api/movimientos`
 
-Funcionalidad de arquitectura por capas propia (Flujo 1): `controlador-1` → `servicio-1` → `interface-dominio` → `dominio-1` → `persistencia-mysql`.
+Bounded context Movimientos: `controlador-1` → `interface-dominio` → `servicio-1` → `dominio-1` → `persistencia-mysql` / `persistencia-h2`.
 
 ### Estructura del recurso
 
@@ -556,7 +556,7 @@ Guía de uso de todos los endpoints de la aplicación para consumirlos desde un 
 
 ## 1. Productos — `/api/productos`
 
-Funcionalidad resuelta por el componente externo (`componente-2`), consumida a través de `controlador-2`.
+Bounded context Productos: `controlador-2` → `interface-producto` → `servicio-producto` → `dominio-producto` → `persistencia-mysql` / `persistencia-h2`.
 
 ### Estructura del recurso
 
@@ -578,7 +578,7 @@ Funcionalidad resuelta por el componente externo (`componente-2`), consumida a t
 | `precio` | number | Sí | Valor decimal. |
 | `stock` | number | Sí | Entero. |
 
-> Nota: `componente-2` no valida los campos obligatorios; los impone la base de datos. Si un campo `NOT NULL` viene nulo, la respuesta será `500`.
+> Nota: `Producto.validar()` (dominio) exige `nombre` no vacío, `precio > 0` y `stock >= 0` antes de tocar la base de datos. Si algún campo es inválido, la respuesta es `400` con el motivo en texto plano.
 
 ### Endpoints
 
@@ -621,7 +621,7 @@ Cuerpo (ejemplo):
 ```
 
 - `201` con el producto creado **incluido su `id`** asignado — usar ese `id` en el frontend (claves de listas, navegación).
-- Errores posibles: `500` si un campo obligatorio (`nombre`, `precio`, `stock`) viene nulo.
+- `400` con el motivo en texto plano si falla `Producto.validar()` (`nombre` vacío, `precio <= 0` o `stock < 0`).
 
 #### `PUT /api/productos/{id}` → `200` ó `400`
 
@@ -646,7 +646,7 @@ Cuerpo (ejemplo):
 
 ## 2. Movimientos — `/api/movimientos`
 
-Funcionalidad de arquitectura por capas propia (Flujo 1): `controlador-1` → `servicio-1` → `interface-dominio` → `dominio-1` → `persistencia-mysql`.
+Bounded context Movimientos: `controlador-1` → `interface-dominio` → `servicio-1` → `dominio-1` → `persistencia-mysql` / `persistencia-h2`.
 
 ### Estructura del recurso
 
