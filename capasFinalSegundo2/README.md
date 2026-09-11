@@ -41,7 +41,7 @@ mvn clean package          # compila y genera el jar ejecutable
 java -jar aplicacion/target/aplicacion-1.0-SNAPSHOT.jar
 ```
 
-La app arranca en **http://localhost:8080** (puerto configurable en `aplicacion/src/main/resources/application.properties` junto con las credenciales de la BD).
+El punto de entrada es la clase `org.example.Aplicacion`, configurada como `<mainClass>` en `aplicacion/pom.xml` (spring-boot-maven-plugin). La app arranca en **http://localhost:8080** (puerto configurable en `aplicacion/src/main/resources/application.properties` junto con las credenciales de la BD).
 
 ## 3. Arquitectura de software
 
