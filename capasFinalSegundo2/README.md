@@ -39,6 +39,7 @@ El esquema (tablas `producto` y `movimiento`) está en `database/mysql/init/01-s
 ```bash
 mvn clean package          # compila y genera el jar ejecutable
 java -jar aplicacion/target/aplicacion-1.0-SNAPSHOT.jar
+java -jar out/artifacts/capasFinalSegundo2_jar/capasFinalSegundo2.jar
 ```
 
 El punto de entrada es la clase `org.example.Aplicacion`, configurada como `<mainClass>` en `aplicacion/pom.xml` (spring-boot-maven-plugin). La app arranca en **http://localhost:8080** (puerto configurable en `aplicacion/src/main/resources/application.properties` junto con las credenciales de la BD).
